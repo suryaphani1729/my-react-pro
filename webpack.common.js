@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const {BundleAnalyzerPlugin} = require("webpack-bundle-analyzer");
-
+const EsLintPlugin = require('eslint-webpack-plugin');
 //const CleanWebpackPlugin = require('clean-webpack-plugin');
 const webpack = require('webpack');
 const {PurgeCSSPlugin} = require('purgecss-webpack-plugin');
@@ -25,12 +25,18 @@ module.exports = {
                 test: /\.(js|jsx)$/,
                 include: path.resolve(__dirname, "src"),
                 exclude: path.resolve(__dirname, "node_modules"),
-                use: {
+                use: [{
                     loader: 'babel-loader',
                     options: {
                         presets: ['@babel/preset-env', '@babel/preset-react']
                     }
-                }
+                },
+                {
+                    loader: "eslint-loader",
+                    options: {
+                        fix: true,
+                    }
+            }]
             },
             {
                 test: /\.(png|svg|jpg|jpeg|gif)$/,
@@ -39,6 +45,7 @@ module.exports = {
         ]
     },
     plugins: [
+        new EsLintPlugin(),
         new webpack.ProvidePlugin({
             $: "jquery"
         }),
