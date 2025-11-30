@@ -1,13 +1,22 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require("copy-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const {BundleAnalyzerPlugin} = require("webpack-bundle-analyzer");
+
 //const CleanWebpackPlugin = require('clean-webpack-plugin');
 const webpack = require('webpack');
-
+const {PurgeCSSPlugin} = require('purgecss-webpack-plugin');
+const glob = require('glob');
+const purgePath = {
+    src: path.join(__dirname, "src"),
+}
 module.exports = {
     entry: './src/index.js',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'bundle.js'
+        filename: '[name].[contenthash].bundle.js',
+        clean: true,
     },
     module: {
         rules: [
@@ -20,13 +29,6 @@ module.exports = {
                         presets: ['@babel/preset-env', '@babel/preset-react']
                     }
                 }
-            },
-            {
-                test: /\.css$/,
-                use: [
-                    'style-loader',
-                    'css-loader'
-                ]
             },
             {
                 test: /\.(png|svg|jpg|jpeg|gif)$/,
@@ -51,15 +53,18 @@ module.exports = {
         ]
     },
     plugins: [
+        new webpack.ProvidePlugin({
+            $: "jquery"
+        }),
         new HtmlWebpackPlugin({
             template: './public/index.html',
             filename: 'index.html'
         }),
         //new CleanWebpackPlugin(),
     ],
-    devServer: {
-        historyApiFallback: true,
-        
-        port: 9000
+    optimization: {
+        splitChunks: {
+            chunks: "all"
+        }
     }
 };
