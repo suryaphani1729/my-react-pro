@@ -5,9 +5,14 @@ const commonConfig = require("./webpack.common");
 
 module.exports = merge(commonConfig,{ mode: "development",
    devServer: {
-        historyApiFallback: true,
-        static: './dist',
-        port: 9000
+    static: {
+        directory: path.resolve(__dirname, "dist"),
+       
+       
+    },
+    historyApiFallback: true,
+     open: true,
+     port: 9000,
     },
     module: {
         rules: [
@@ -23,19 +28,18 @@ module.exports = merge(commonConfig,{ mode: "development",
             },
             {
                 test: /\.css$/,
-                use: [
-                    'style-loader',
-                    'css-loader'
-                ]
+                use: [ 'style-loader',   'css-loader', 'postcss-loader' ],
+                
             },
             {
                 test: /\.s[ac]ss$/,
-                use:['style-loader', 'css-loader', 'sass-loader']
+                use:['style-loader', 'css-loader', 'postcss-loader', 'sass-loader'],
+                
             }
         ]
     },
     plugins: [
-        new BundleAnalyzerPlugin({}),
+        new BundleAnalyzerPlugin({})
     ],
     
 });
